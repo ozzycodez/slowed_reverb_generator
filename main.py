@@ -1,2 +1,3 @@
 import soundfile as sf
-from pysndx import AudioEffectsChain
+from pysndfx import AudioEffectsChain
+
