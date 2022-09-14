@@ -1,12 +1,51 @@
+from curses.ascii import SO
 import soundfile as sf
 from pysndfx import AudioEffectsChain
 import os
+from pydub import AudioSegment
 
 
 
 ORIGINAL_PATH = os.getcwd() + "/wav_directory/original"
 SLOWED_REVERB_PATH = os.getcwd() + "/wav_directory/slowed_reverb"
 SONG_NAME = ""
+
+
+
+
+#if MP3 input in 'original' directory, will convert to WAV format, so soundfile and pysndfx can work
+def convertMp3ToWav(dir):
+    TEMP_PATH = ORIGINAL_PATH + SONG_NAME
+    sound = AudioSegment.from_mp3(dir)
+    sound.export(TEMP_PATH, format="wav")
+
+
+
+
+#converts WAV to MP3 (To have playable end product)
+def convertWavToMp3(dir):
+    TEMP_PATH = SLOWED_REVERB_PATH + SONG_NAME
+    sound = AudioSegment.from_wav(dir)
+    sound.export(TEMP_PATH, format="mp3")
+
+
+
+#will find name of audio file, stored in the "original" directory
+def findName(dir):
+    fileNames = os.listdir(dir)
+    count = 0
+
+    for files in fileNames:
+        count += 1
+    
+    if count != 1:
+        return "ERROR, make sure there is only 1 file in '/wav_directory/original"
+    else:
+        for name in fileNames:
+            size = len(name)
+            global SONG_NAME
+            SONG_NAME = name[:size- 4]
+
 
 
 
@@ -22,9 +61,6 @@ def findWavOriginal(dir):
         return "ERROR, make sure there is only 1 file in '/wav_directory/original"
     else:
         for name in fileNames:
-            size = len(name)
-            global SONG_NAME
-            SONG_NAME = name[:size- 4]
             wav_orignal_path = os.path.join(dir, name)
             return wav_orignal_path 
 
@@ -32,17 +68,3 @@ def findWavOriginal(dir):
 
 if __name__ == "__main__":
     ORIGINAL_WAV_FILE = findWavOriginal(ORIGINAL_PATH)
-
-    s, rate = sf.read(ORIGINAL_WAV_FILE)
-    fx = (
-        AudioEffectsChain()
-        .speed(0.8)
-    )
-    s = fx(s, sample_in=rate)
-
-
-    NEW_WAV_FILE = SONG_NAME + "_slowed_reverb.wav"
-    SLOWED_REVERB_PATH_SAVE = os.path.join(SLOWED_REVERB_PATH,NEW_WAV_FILE)
-    sf.write(SLOWED_REVERB_PATH_SAVE,s,rate, 'PCM_16')
-
-
