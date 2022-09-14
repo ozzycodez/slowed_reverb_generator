@@ -15,7 +15,7 @@ SONG_NAME = ""
 
 #if MP3 input in 'original' directory, will convert to WAV format, so soundfile and pysndfx can work
 def convertMp3ToWav(dir):
-    TEMP_PATH = ORIGINAL_PATH + SONG_NAME
+    TEMP_PATH = ORIGINAL_PATH + "/" + SONG_NAME + ".wav"
     sound = AudioSegment.from_mp3(dir)
     sound.export(TEMP_PATH, format="wav")
 
@@ -27,6 +27,7 @@ def convertWavToMp3(dir):
     TEMP_PATH = SLOWED_REVERB_PATH + SONG_NAME
     sound = AudioSegment.from_wav(dir)
     sound.export(TEMP_PATH, format="mp3")
+
 
 
 
@@ -67,4 +68,5 @@ def findWavOriginal(dir):
 
 
 if __name__ == "__main__":
-    ORIGINAL_WAV_FILE = findWavOriginal(ORIGINAL_PATH)
+    findName(ORIGINAL_PATH)
+    convertMp3ToWav(ORIGINAL_PATH + "/" + SONG_NAME + ".mp3")
